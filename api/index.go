@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Jiang-Gianni/htmx-go/server"
+	"github.com/Jiang-Gianni/gosqlx/server"
 	"github.com/go-chi/chi/v5"
 )
 

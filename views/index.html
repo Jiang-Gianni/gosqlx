@@ -1,3 +1,4 @@
+{% import "os" %}
 {% code
 type Page struct {
 Title string
@@ -6,14 +7,24 @@ Description string
 %}
 
 {% func CommonHeaders() %}
+{% code
+baseUrl := os.Getenv("BASE_URL")
+%}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./assets/pico.css">
-<!-- <link rel="stylesheet" href="./assets/water.css"> -->
-<script src="./assets/htmx.js" async defer></script>
+<script src="{%s baseUrl %}/assets/htmx.js"></script>
+<script src="{%s baseUrl %}/assets/unocss.js"></script>
+<link rel="stylesheet" href="{%s baseUrl %}/assets/pico.css">
+<!-- <link rel="stylesheet" href="{%s baseUrl %}/assets/turret.css"> -->
+<!-- <link rel="stylesheet" href="{%s baseUrl %}/assets/water.css"> -->
+<style>
+    [un-cloak] {
+        display: none;
+    }
+</style>
 
 <!-- TODO remove before pushing to production -->
-<!-- <script>
+<script>
     var wsuri = "ws://localhost:1234/ws";
     window.onload = function () {
         sock = new WebSocket(wsuri);
@@ -27,7 +38,8 @@ Description string
             window.location.href = window.location.href
         }
     };
-</script> -->
+    htmx.logAll()
+</script>
 
 {% endfunc %}
 
@@ -42,20 +54,9 @@ Description string
 
 </head>
 
-<body>
+<body un-cloak>
     {%s= body %}
 </body>
 
 </html>
-{% endfunc %}
-
-
-
-{% func IndexBody() %}
-<h1> Title </h1>
-<button hx-get="first">
-    <a href="first"></a>
-    First
-</button>
-<code>Let's go there</code>
 {% endfunc %}

@@ -1,0 +1,110 @@
+{% import "github.com/Jiang-Gianni/gosqlx/db" %}
+
+{% func connectionCard(conn db.Connection, rdmsList []db.Rdm, actions string) %}
+<article class="m-5 p-5 connection" {% if conn.ID !=0 %}hx-post="connection/{%v conn.ID %}"
+    hx-include="closest .connection" hx-swap="outerHTML" hx-trigger="change" {% endif %}>
+
+    <div class="flex flex-row">
+
+        <select name="id_rdms">
+            {% for _, rdms := range rdmsList %}
+            <option value="{%v rdms.ID %}" {% if rdms.ID==conn.IDRdms %}selected{% endif %}>{%s rdms.System %}</option>
+            {% endfor %}
+        </select>
+
+        <label class="m-3 text-center">
+            <input type="checkbox" name="ssl" role="switch" {% if conn.Ssl.Bool %}checked{% endif %}>
+            SSL
+        </label>
+
+    </div>
+
+    <div>
+        <input type="text" name="name" placeholder="Name" value="{%s conn.Name %}" />
+    </div>
+
+    <div>
+        <input type="text" name="host" placeholder="Host" value="{%s conn.Host %}" />
+    </div>
+
+    <div class="flex flex-row justify-center gap-7">
+        <div>
+            <input type="number" name="port" placeholder="Port"
+                value="{% if conn.Port!=0 %}{%v conn.Port %}{% endif %}" />
+        </div>
+        <div>
+            <input type="text" name="datasource" placeholder="Datasource" value="{%s conn.Datasource %}" />
+        </div>
+    </div>
+
+    <div class="flex flex-row justify-center gap-7">
+        <div>
+            <input type="text" name="user" placeholder="User" value="{%s conn.User %}" />
+        </div>
+
+        <div>
+            <input type="password" name="password" placeholder="Password" value="{%s conn.Password %}" />
+        </div>
+    </div>
+
+    <div class="flex p-4 justify-center gap-7">
+
+        {%s= actions %}
+
+    </div>
+
+
+</article>
+{% endfunc %}
+
+
+
+{% func modifyConnectionActions(conn db.Connection) %}
+<div>
+    <a href="database/{%v conn.ID %}" target="_blank">
+        <button>Open</button>
+    </a>
+</div>
+
+<div hx-delete="connection/{%v conn.ID %}" hx-target="closest .connection" hx-swap="outerHTML">
+    <button>Delete</button>
+</div>
+{% endfunc %}
+
+
+
+{% func newConnectionActions() %}
+<div hx-post="connection" hx-include="closest .connection" hx-target="#connection-list" hx-swap="beforeend">
+    <button>Add</button>
+</div>
+{% endfunc %}
+
+
+
+{% func ModifyConnection(conn db.Connection, rdms []db.Rdm) %}
+{%s= connectionCard(conn, rdms, modifyConnectionActions(conn)) %}
+{% endfunc %}
+
+
+
+{% func NewConnection(rdms []db.Rdm) %}
+{% code
+conn := db.Connection{}
+%}
+<div class="w-1/4">
+    {%s= connectionCard(conn, rdms, newConnectionActions()) %}
+</div>
+{% endfunc %}
+
+
+
+{% func ConnectionBody(conns []db.Connection, rdms []db.Rdm) %}
+<div class="grid grid-cols-4" id="connection-list">
+    {% for _, conn := range conns %}
+    {%s= ModifyConnection(conn, rdms) %}
+    {% endfor %}
+</div>
+<div class="flex justify-evenly">
+    {%s= NewConnection(rdms) %}
+</div>
+{% endfunc %}

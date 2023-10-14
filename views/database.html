@@ -1,0 +1,30 @@
+{% import "github.com/Jiang-Gianni/gosqlx/db" %}
+
+{% func DatabaseBody(conn db.Connection, tables []string) %}
+
+<div>
+    {%s= databaseSideMenu(tables) %}
+</div>
+
+{% endfunc %}
+
+
+{% func databaseSideMenu(tables []string) %}
+
+<article>
+    <div class="collapse-title">
+        Tables
+    </div>
+    <div>
+        <ul class="menu">
+            {% for _, table := range tables %}
+            <li class="border-2 border-teal-500 m-1 rounded text-teal-300">
+                <div hx-push-url="true" hx-get="?table={%s table %}">{%s table %}</div>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</article>
+
+{% endfunc %}

@@ -1,22 +1,43 @@
 package server
 
 import (
+	"database/sql"
 	"io/fs"
 	"log"
 	"net/http"
 
+	"github.com/Jiang-Gianni/gosqlx/db"
+	"github.com/Jiang-Gianni/gosqlx/views"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Common variables
 var (
 	err          error
 	routerGroups = []func(r chi.Router){
-		indexGroup,
-		firstGroup,
+		connectionGroup,
+		databaseGroup,
+	}
+	query     *db.Queries
+	errorPage = &views.Page{
+		Title:       "Error",
+		Description: "Error",
 	}
 )
+
+func init() {
+	query = db.New(InitSqlite())
+}
+
+func InitSqlite() *sql.DB {
+	sqlite, err := sql.Open("sqlite3", "sqlite.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return sqlite
+}
 
 // Parse html templates, register http routings and serve on port 3000
 func RegisterAndRun(assetsFs fs.FS) {
@@ -24,7 +45,6 @@ func RegisterAndRun(assetsFs fs.FS) {
 	// Chi Router
 	r := Router(assetsFs)
 
-	log.Println("listening on port 3000")
 	if err = http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}

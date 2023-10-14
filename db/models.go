@@ -4,9 +4,23 @@
 
 package db
 
-import ()
+import (
+	"database/sql"
+)
 
-type Dummy struct {
-	ID   int64
-	Name string
+type Connection struct {
+	ID         int64
+	IDRdms     int64
+	Ssl        sql.NullBool
+	Name       string
+	Host       string
+	Port       int64
+	Datasource string
+	User       string
+	Password   string
+}
+
+type Rdm struct {
+	ID     int64
+	System string
 }
