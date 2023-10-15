@@ -7,125 +7,273 @@ package views
 //line views/database.html:1
 import "github.com/Jiang-Gianni/gosqlx/db"
 
-//line views/database.html:3
+//line views/database.html:2
+import "github.com/Jiang-Gianni/gosqlx/rdms"
+
+//line views/database.html:4
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line views/database.html:3
+//line views/database.html:4
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line views/database.html:3
+//line views/database.html:4
 func StreamDatabaseBody(qw422016 *qt422016.Writer, conn db.Connection, tables []string) {
-//line views/database.html:3
+//line views/database.html:4
 	qw422016.N().S(`
+<div class="flex m-10">
 
-<div>
     `)
-//line views/database.html:6
+//line views/database.html:7
 	qw422016.N().S(databaseSideMenu(tables))
-//line views/database.html:6
+//line views/database.html:7
 	qw422016.N().S(`
-</div>
 
-`)
+    <div class="container-fluid" hx-post="/database/`)
 //line views/database.html:9
-}
+	qw422016.E().V(conn.ID)
+//line views/database.html:9
+	qw422016.N().S(`/exec" hx-include="[name='query']"
+        hx-target="#results" hx-trigger="keydown[keyCode==13&&ctrlKey]">
 
-//line views/database.html:9
-func WriteDatabaseBody(qq422016 qtio422016.Writer, conn db.Connection, tables []string) {
-//line views/database.html:9
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/database.html:9
-	StreamDatabaseBody(qw422016, conn, tables)
-//line views/database.html:9
-	qt422016.ReleaseWriter(qw422016)
-//line views/database.html:9
-}
-
-//line views/database.html:9
-func DatabaseBody(conn db.Connection, tables []string) string {
-//line views/database.html:9
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/database.html:9
-	WriteDatabaseBody(qb422016, conn, tables)
-//line views/database.html:9
-	qs422016 := string(qb422016.B)
-//line views/database.html:9
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/database.html:9
-	return qs422016
-//line views/database.html:9
-}
-
+        `)
 //line views/database.html:12
-func streamdatabaseSideMenu(qw422016 *qt422016.Writer, tables []string) {
+	qw422016.N().S(QueryTextArea(""))
 //line views/database.html:12
 	qw422016.N().S(`
 
-<article>
-    <div class="collapse-title">
-        Tables
+        <div id="results" class="overflow-hidden"></div>
+
     </div>
-    <div>
-        <ul class="menu">
+
+</div>
+`)
+//line views/database.html:19
+}
+
+//line views/database.html:19
+func WriteDatabaseBody(qq422016 qtio422016.Writer, conn db.Connection, tables []string) {
+//line views/database.html:19
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/database.html:19
+	StreamDatabaseBody(qw422016, conn, tables)
+//line views/database.html:19
+	qt422016.ReleaseWriter(qw422016)
+//line views/database.html:19
+}
+
+//line views/database.html:19
+func DatabaseBody(conn db.Connection, tables []string) string {
+//line views/database.html:19
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/database.html:19
+	WriteDatabaseBody(qb422016, conn, tables)
+//line views/database.html:19
+	qs422016 := string(qb422016.B)
+//line views/database.html:19
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/database.html:19
+	return qs422016
+//line views/database.html:19
+}
+
+//line views/database.html:22
+func streamdatabaseSideMenu(qw422016 *qt422016.Writer, tables []string) {
+//line views/database.html:22
+	qw422016.N().S(`
+<div class="w-1/5">
+    <details open>
+        <summary role="button">Tables</summary>
+        <ul>
+            <li>Table 1</li>
+            <li>Table 2</li>
             `)
-//line views/database.html:20
+//line views/database.html:29
 	for _, table := range tables {
-//line views/database.html:20
+//line views/database.html:29
 		qw422016.N().S(`
-            <li class="border-2 border-teal-500 m-1 rounded text-teal-300">
-                <div hx-push-url="true" hx-get="?table=`)
-//line views/database.html:22
+            <li>`)
+//line views/database.html:30
 		qw422016.E().S(table)
-//line views/database.html:22
-		qw422016.N().S(`">`)
-//line views/database.html:22
-		qw422016.E().S(table)
-//line views/database.html:22
-		qw422016.N().S(`</div>
-            </li>
+//line views/database.html:30
+		qw422016.N().S(`</li>
             `)
-//line views/database.html:24
+//line views/database.html:31
 	}
-//line views/database.html:24
+//line views/database.html:31
 	qw422016.N().S(`
         </ul>
-
-    </div>
-</article>
-
+    </details>
+    <details>
+        <summary role="button" class="contrast">Views</summary>
+        <ul>
+            <li>View 1</li>
+            <li>View 2</li>
+        </ul>
+    </details>
+</div>
 `)
-//line views/database.html:30
+//line views/database.html:42
 }
 
-//line views/database.html:30
+//line views/database.html:42
 func writedatabaseSideMenu(qq422016 qtio422016.Writer, tables []string) {
-//line views/database.html:30
+//line views/database.html:42
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/database.html:30
+//line views/database.html:42
 	streamdatabaseSideMenu(qw422016, tables)
-//line views/database.html:30
+//line views/database.html:42
 	qt422016.ReleaseWriter(qw422016)
-//line views/database.html:30
+//line views/database.html:42
 }
 
-//line views/database.html:30
+//line views/database.html:42
 func databaseSideMenu(tables []string) string {
-//line views/database.html:30
+//line views/database.html:42
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/database.html:30
+//line views/database.html:42
 	writedatabaseSideMenu(qb422016, tables)
-//line views/database.html:30
+//line views/database.html:42
 	qs422016 := string(qb422016.B)
-//line views/database.html:30
+//line views/database.html:42
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/database.html:30
+//line views/database.html:42
 	return qs422016
-//line views/database.html:30
+//line views/database.html:42
+}
+
+//line views/database.html:45
+func StreamQueryResult(qw422016 *qt422016.Writer, qr *rdms.QueryResults) {
+//line views/database.html:45
+	qw422016.N().S(`
+<table role="grid">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            `)
+//line views/database.html:50
+	for _, col := range qr.Columns {
+//line views/database.html:50
+		qw422016.N().S(`
+            <th scope="col">`)
+//line views/database.html:51
+		qw422016.E().S(col)
+//line views/database.html:51
+		qw422016.N().S(`</th>
+            `)
+//line views/database.html:52
+	}
+//line views/database.html:52
+	qw422016.N().S(`
+        </tr>
+    </thead>
+    <tbody>
+        `)
+//line views/database.html:56
+	for index, row := range qr.Rows {
+//line views/database.html:56
+		qw422016.N().S(`
+        <tr>
+            <th scope="row">`)
+//line views/database.html:58
+		qw422016.E().V(index + 1)
+//line views/database.html:58
+		qw422016.N().S(`</th>
+            `)
+//line views/database.html:59
+		for _, val := range row {
+//line views/database.html:59
+			qw422016.N().S(`
+            <td>`)
+//line views/database.html:60
+			qw422016.E().S(val)
+//line views/database.html:60
+			qw422016.N().S(`</td>
+            `)
+//line views/database.html:61
+		}
+//line views/database.html:61
+		qw422016.N().S(`
+        </tr>
+        `)
+//line views/database.html:63
+	}
+//line views/database.html:63
+	qw422016.N().S(`
+    </tbody>
+</table>
+`)
+//line views/database.html:66
+}
+
+//line views/database.html:66
+func WriteQueryResult(qq422016 qtio422016.Writer, qr *rdms.QueryResults) {
+//line views/database.html:66
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/database.html:66
+	StreamQueryResult(qw422016, qr)
+//line views/database.html:66
+	qt422016.ReleaseWriter(qw422016)
+//line views/database.html:66
+}
+
+//line views/database.html:66
+func QueryResult(qr *rdms.QueryResults) string {
+//line views/database.html:66
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/database.html:66
+	WriteQueryResult(qb422016, qr)
+//line views/database.html:66
+	qs422016 := string(qb422016.B)
+//line views/database.html:66
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/database.html:66
+	return qs422016
+//line views/database.html:66
+}
+
+//line views/database.html:69
+func StreamQueryTextArea(qw422016 *qt422016.Writer, query string) {
+//line views/database.html:69
+	qw422016.N().S(`
+<textarea autofocus id="query" name="query" class="h-40" placeholder="Enter your SQL query here.
+Ctrl + Enter to execute." hx-swap-oob="true">`)
+//line views/database.html:71
+	qw422016.E().S(query)
+//line views/database.html:71
+	qw422016.N().S(`</textarea>
+`)
+//line views/database.html:72
+}
+
+//line views/database.html:72
+func WriteQueryTextArea(qq422016 qtio422016.Writer, query string) {
+//line views/database.html:72
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/database.html:72
+	StreamQueryTextArea(qw422016, query)
+//line views/database.html:72
+	qt422016.ReleaseWriter(qw422016)
+//line views/database.html:72
+}
+
+//line views/database.html:72
+func QueryTextArea(query string) string {
+//line views/database.html:72
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/database.html:72
+	WriteQueryTextArea(qb422016, query)
+//line views/database.html:72
+	qs422016 := string(qb422016.B)
+//line views/database.html:72
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/database.html:72
+	return qs422016
+//line views/database.html:72
 }

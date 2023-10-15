@@ -1,30 +1,72 @@
 {% import "github.com/Jiang-Gianni/gosqlx/db" %}
+{% import "github.com/Jiang-Gianni/gosqlx/rdms" %}
 
 {% func DatabaseBody(conn db.Connection, tables []string) %}
+<div class="flex m-10">
 
-<div>
     {%s= databaseSideMenu(tables) %}
-</div>
 
+    <div class="container-fluid" hx-post="/database/{%v conn.ID %}/exec" hx-include="[name='query']"
+        hx-target="#results" hx-trigger="keydown[keyCode==13&&ctrlKey]">
+
+        {%s= QueryTextArea("") %}
+
+        <div id="results" class="overflow-hidden"></div>
+
+    </div>
+
+</div>
 {% endfunc %}
 
 
 {% func databaseSideMenu(tables []string) %}
-
-<article>
-    <div class="collapse-title">
-        Tables
-    </div>
-    <div>
-        <ul class="menu">
+<div class="w-1/5">
+    <details open>
+        <summary role="button">Tables</summary>
+        <ul>
+            <li>Table 1</li>
+            <li>Table 2</li>
             {% for _, table := range tables %}
-            <li class="border-2 border-teal-500 m-1 rounded text-teal-300">
-                <div hx-push-url="true" hx-get="?table={%s table %}">{%s table %}</div>
-            </li>
+            <li>{%s table %}</li>
             {% endfor %}
         </ul>
+    </details>
+    <details>
+        <summary role="button" class="contrast">Views</summary>
+        <ul>
+            <li>View 1</li>
+            <li>View 2</li>
+        </ul>
+    </details>
+</div>
+{% endfunc %}
 
-    </div>
-</article>
 
+{% func QueryResult(qr *rdms.QueryResults) %}
+<table role="grid">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            {% for _, col := range qr.Columns %}
+            <th scope="col">{%s col %}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for index, row := range qr.Rows %}
+        <tr>
+            <th scope="row">{%v index + 1 %}</th>
+            {% for _, val := range row %}
+            <td>{%s val %}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endfunc %}
+
+
+{% func QueryTextArea(query string) %}
+<textarea autofocus id="query" name="query" class="h-40" placeholder="Enter your SQL query here.
+Ctrl + Enter to execute." hx-swap-oob="true">{%s query %}</textarea>
 {% endfunc %}

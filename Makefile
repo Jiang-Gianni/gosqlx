@@ -29,10 +29,10 @@ mysql:
 	docker run --name local-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=mydb -d mysql
 
 km:
-	docker ps -a -q --filter ancestor=mysql | docker kill {} && docker container prune
+	docker kill $$(docker ps -a -q --filter ancestor=mysql) && docker container prune
 
 postgres:
 	docker run --name local-postgres -p 5432:5432 -e POSTGRES_PASSWORD=my-secret-pw -e POSTGRES_USER=root -e POSTGRES_DB=mydb -d postgres
 
 kp:
-	docker ps -a -q --filter ancestor=postgres | docker kill {} && docker container prune
+	docker kill $$(docker ps -a -q --filter ancestor=postgres) && docker container prune
