@@ -62,6 +62,7 @@ func Router(assetsFs fs.FS) *chi.Mux {
 
 	// Serving static files
 	router.Get("/assets/*", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age=2592000")
 		fs := http.StripPrefix("/assets/", http.FileServer(http.FS(assetsFs)))
 		fs.ServeHTTP(w, r)
 	})

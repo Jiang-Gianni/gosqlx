@@ -1,0 +1,6 @@
+{% import "github.com/Jiang-Gianni/gosqlx/rdms" %}
+{% import "strings" %}
+
+{% func ExportCsv(qr *rdms.QueryResults) %}{%s strings.Join(qr.Columns, ", ") %},{% for _, row := range qr.Rows %}
+{%s= strings.Join(row, "', '") %},{% endfor %}
+{% endfunc %}

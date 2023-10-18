@@ -63,7 +63,7 @@ func connectionFromRequest(r *http.Request) (*db.Connection, error) {
 	var conn = &db.Connection{
 		IDRdms: int64(idRdms),
 		Ssl: sql.NullBool{
-			Bool:  r.FormValue("ssl") == "on",
+			Bool:  r.FormValue("ssl") == on,
 			Valid: true,
 		},
 		Name:       r.FormValue("name"),

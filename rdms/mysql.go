@@ -9,7 +9,7 @@ import (
 
 // root:password@tcp(localhost:3306)/test
 func MySqlConnectionString(conn db.Connection) string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", conn.User, conn.Password, conn.Host, conn.Port, conn.Datasource)
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?&multiStatements=true&interpolateParams=true", conn.User, conn.Password, conn.Host, conn.Port, conn.Datasource)
 }
 
 func MySqlSelectAllTables(conn db.Connection) string {

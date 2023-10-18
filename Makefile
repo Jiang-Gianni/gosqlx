@@ -1,5 +1,5 @@
 qtc:
-	@qtc -dir=views -ext=html
+	@qtc -dir=views -ext=html && qtc -dir export -ext=sql && qtc -dir export -ext=csv
 
 watch:
 	@go run cmd/fileWatcher/fileWatcher.go

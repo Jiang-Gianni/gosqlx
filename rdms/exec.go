@@ -1,12 +1,25 @@
 package rdms
 
+import (
+	"time"
+)
+
 type QueryResults struct {
-	Columns []string
-	Rows    [][]string
+	Columns  []string
+	Rows     [][]string
+	ExecTime time.Duration
+	Query    string
 }
 
 func (d *Database) ExecQuery(query string) (*QueryResults, error) {
-	qr := &QueryResults{}
+	qr := &QueryResults{
+		Query: query,
+	}
+
+	defer func(start time.Time) {
+		qr.ExecTime = time.Duration(time.Since(start))
+	}(time.Now())
+
 	rows, err := d.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -17,18 +30,15 @@ func (d *Database) ExecQuery(query string) (*QueryResults, error) {
 	}
 	qr.Columns = cols
 
-	// Result is your slice string.
 	rawResult := make([][]byte, len(cols))
-	result := make([]string, len(cols))
-	// A temporary interface{} slice
 	dest := make([]interface{}, len(cols))
 
-	// Put pointers to each string in the interface slice
 	for i := range rawResult {
 		dest[i] = &rawResult[i]
 	}
 
 	for rows.Next() {
+		result := make([]string, len(cols))
 		if err := rows.Scan(dest...); err != nil {
 			return nil, err
 		}
@@ -41,11 +51,13 @@ func (d *Database) ExecQuery(query string) (*QueryResults, error) {
 		}
 		qr.Rows = append(qr.Rows, result)
 	}
+
 	if err := rows.Close(); err != nil {
 		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
 	return qr, nil
 }

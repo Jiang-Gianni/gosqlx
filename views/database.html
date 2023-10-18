@@ -4,14 +4,60 @@
 {% func DatabaseBody(conn db.Connection, tables []string) %}
 <div class="flex m-10">
 
-    {%s= databaseSideMenu(tables) %}
+    <div class="w-1/5">
+        <div x-data="{open:false}">
+            <button @click="open=!open" class="bg-teal-600">Tables</button>
+            <div id="table-list" x-show="open" x-collapse>
+                <p>Table 1</p>
+                <p>Table 2</p>
+                {% for _, table := range tables %}
+                <p>{%s table %}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div x-data="{open:false}">
+            <button @click="open=!open" class="secondary">Views</button>
+            <div id="table-list" x-show="open" x-collapse>
+                <p>View 1</p>
+                <p>View 2</p>
+                {% for _, table := range tables %}
+                <p>{%s table %}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-    <div class="container-fluid" hx-post="/database/{%v conn.ID %}/exec" hx-include="[name='query']"
-        hx-target="#results" hx-trigger="keydown[keyCode==13&&ctrlKey]">
 
-        {%s= QueryTextArea("") %}
+    <div class="container-fluid w-9/12">
 
-        <div id="results" class="overflow-hidden"></div>
+        <div id="export" class="flex flex-row" x-data="{isexport:false, extension:'sql'}">
+            <button class="m-4 w-1/5" @click="isexport=!isexport" :class="isexport?'bg-teal-600':'secondary'">
+                <input type="checkbox" name="export" hidden x-model="isexport">
+                Export
+            </button>
+
+            <select id="extension" required class="m-4 w-1/4" name="extension" x-bind:disabled="!isexport" x-transition
+                x-model="extension">
+                <option>sql</option>
+                <option>csv</option>
+            </select>
+
+            <input class="m-4" type="text" name="output" placeholder="Output File" x-bind:disabled="!isexport"
+                x-transition>
+
+            <input class="m-4" type="text" name="insert-into" placeholder="Insert Into" x-bind:disabled="!isexport"
+                x-transition x-show="extension == 'sql'">
+
+        </div>
+
+        <div hx-post="/database/{%v conn.ID %}/exec" hx-include="closest .container-fluid" hx-target="#result-section"
+            hx-trigger="keydown[keyCode==13&&ctrlKey]">
+
+            {%s= QueryTextArea("") %}
+
+            <div id="result-section" class="overflow-auto absolute w-4/5">
+            </div>
+        </div>
 
     </div>
 
@@ -19,50 +65,29 @@
 {% endfunc %}
 
 
-{% func databaseSideMenu(tables []string) %}
-<div class="w-1/5">
-    <details open>
-        <summary role="button">Tables</summary>
-        <ul>
-            <li>Table 1</li>
-            <li>Table 2</li>
-            {% for _, table := range tables %}
-            <li>{%s table %}</li>
-            {% endfor %}
-        </ul>
-    </details>
-    <details>
-        <summary role="button" class="contrast">Views</summary>
-        <ul>
-            <li>View 1</li>
-            <li>View 2</li>
-        </ul>
-    </details>
-</div>
-{% endfunc %}
-
-
 {% func QueryResult(qr *rdms.QueryResults) %}
+<small>Execution time {%v qr.ExecTime %}</small>
 <table role="grid">
     <thead>
         <tr>
-            <th scope="col">#</th>
-            {% for _, col := range qr.Columns %}
-            <th scope="col">{%s col %}</th>
-            {% endfor %}
+            <th scope="col" class="w-2">#</th>
+            {% for _, col := range qr.Columns %}<th scope="col"><small>{%s col %}</small></th>{% endfor %}
         </tr>
     </thead>
     <tbody>
         {% for index, row := range qr.Rows %}
         <tr>
-            <th scope="row">{%v index + 1 %}</th>
-            {% for _, val := range row %}
-            <td>{%s val %}</td>
-            {% endfor %}
+            <th scope="row" class="w-2">{%v index + 1 %}</th>
+            {% for _, val := range row %}<td>{%s val %}</td>{% endfor %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% endfunc %}
+
+{% func FileExportResult(qr *rdms.QueryResults, outputFileName string) %}
+<small>Execution time {%v qr.ExecTime %}</small>
+<div>Successfully exported to {%s outputFileName %}</div>
 {% endfunc %}
 
 

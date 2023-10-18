@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Jiang-Gianni/gosqlx/export"
 	"github.com/Jiang-Gianni/gosqlx/rdms"
 	"github.com/Jiang-Gianni/gosqlx/views"
 	"github.com/go-chi/chi/v5"
@@ -62,11 +63,31 @@ func getDatabase(w http.ResponseWriter, r *http.Request) {
 }
 
 func postExec(w http.ResponseWriter, r *http.Request) {
+
 	database := databaseFromContext(r)
 	query := r.FormValue("query")
 	rows, err := database.ExecQuery(query)
 	if err != nil {
 		views.WriteError(w, err)
+		return
 	}
-	views.WriteQueryResult(w, rows)
+
+	if r.FormValue("export") == on {
+
+		outputFileName := r.FormValue("output")
+		extension := r.FormValue("extension")
+		insertInto := r.FormValue("insert-into")
+		err = export.ExportFile(rows, insertInto, outputFileName, extension)
+		if err != nil {
+			views.WriteError(w, err)
+			return
+		}
+
+		views.WriteFileExportResult(w, rows, outputFileName)
+
+	} else {
+
+		views.WriteQueryResult(w, rows)
+
+	}
 }
