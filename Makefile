@@ -26,13 +26,13 @@ pull:
 	@docker pull mysql && docker pull postgres
 
 mysql:
-	docker run --name local-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=mydb -d mysql
+	docker run --rm -it --name local-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=mydb -d mysql
 
 km:
 	docker kill $$(docker ps -a -q --filter ancestor=mysql) && docker container prune
 
 postgres:
-	docker run --name local-postgres -p 5432:5432 -e POSTGRES_PASSWORD=my-secret-pw -e POSTGRES_USER=root -e POSTGRES_DB=mydb -d postgres
+	docker run --rm -it --name local-postgres -p 5432:5432 -e POSTGRES_PASSWORD=my-secret-pw -e POSTGRES_USER=root -e POSTGRES_DB=mydb -d postgres
 
 kp:
 	docker kill $$(docker ps -a -q --filter ancestor=postgres) && docker container prune

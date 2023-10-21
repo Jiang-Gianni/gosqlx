@@ -16,11 +16,11 @@ import (
 // Common variables
 var (
 	err          error
+	query        *db.Queries
 	routerGroups = []func(r chi.Router){
 		connectionGroup,
 		databaseGroup,
 	}
-	query     *db.Queries
 	errorPage = &views.Page{
 		Title:       "Error",
 		Description: "Error",
@@ -62,7 +62,8 @@ func Router(assetsFs fs.FS) *chi.Mux {
 
 	// Serving static files
 	router.Get("/assets/*", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "max-age=2592000")
+		// w.Header().Set("Cache-Control", "max-age=2592000")
+		w.Header().Set("Cache-Control", "no-store")
 		fs := http.StripPrefix("/assets/", http.FileServer(http.FS(assetsFs)))
 		fs.ServeHTTP(w, r)
 	})
