@@ -2,13 +2,13 @@
   <img width="460" height="300" src="./img/go-sql-x.svg">
 </p>
 
-Are you tired of bulky SQL clients that consume excessive resources, slow down your system, and make you wait ages for startup? Introducing **GoSQLXperience**, a sleek and efficient SQL client written in Golang and powered by HTMX.
+Are you tired of bulky SQL clients that consume excessive resources, slow down your system, and make you wait ages for startup? Introducing **GoSQLX**, a sleek and efficient SQL client written in Golang and powered by HTMX.
 
-## Why GoSQLXperience?
+## Why GoSQLX?
 
-- **Lightweight Installation**: Say goodbye to hefty installation packages. GoSQLXperience provides a minimal footprint, ensuring a swift and hassle-free setup.
+- **Lightweight Installation**: Say goodbye to hefty installation packages. GoSQLX provides a minimal footprint, ensuring a swift and hassle-free setup.
 
-- **Resource Efficiency**: Unlike traditional SQL clients that hog your RAM during execution, GoSQLXperience is designed to be resource-efficient, leaving your system responsive and ready for action.
+- **Resource Efficiency**: Unlike traditional SQL clients that hog your RAM during execution, GoSQLX is designed to be resource-efficient, leaving your system responsive and ready for action.
 
 - **Instant Access**: Launch the Golang server, and you're instantly connected to your SQL database through the browser on localhost. No more waiting for sluggish startup times.
 
@@ -36,6 +36,6 @@ Are you tired of bulky SQL clients that consume excessive resources, slow down y
 
 ## Contribute
 
-GoSQLXperience is an open-source project, and we welcome contributions. Whether you're a Golang enthusiast, an HTMX aficionado, or simply eager to improve the SQL client experience, your contributions are valuable.
+GoSQLX is an open-source project, and we welcome contributions. Whether you're a Golang enthusiast, an HTMX aficionado, or simply eager to improve the SQL client experience, your contributions are valuable.
 
-Experience SQL interaction in a new light—lightweight, fast, and efficient. Upgrade to GoSQLXperience today!
+Experience SQL interaction in a new light—lightweight, fast, and efficient. Upgrade to GoSQLX today!
