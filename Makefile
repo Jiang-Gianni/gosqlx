@@ -31,7 +31,7 @@ mysql:
 km:
 	docker kill $$(docker ps -a -q --filter ancestor=mysql) && docker container prune
 
-postgres:
+pg:
 	docker run --rm -it --name local-postgres -p 5432:5432 -e POSTGRES_PASSWORD=my-secret-pw -e POSTGRES_USER=root -e POSTGRES_DB=mydb -d postgres
 
 kp:
