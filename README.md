@@ -1,7 +1,6 @@
-![GoSQLX](./img/go-sql-x.svg)
-
-
-# GoSQLXperience: Lightweight and Speedy SQL Client
+<p align="center">
+  <img width="460" height="300" src="./img/go-sql-x.svg">
+</p>
 
 Are you tired of bulky SQL clients that consume excessive resources, slow down your system, and make you wait ages for startup? Introducing **GoSQLXperience**, a sleek and efficient SQL client written in Golang and powered by HTMX.
 
